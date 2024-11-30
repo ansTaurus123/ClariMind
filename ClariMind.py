@@ -19,7 +19,7 @@ def reset_chat():
 # Initialize session state variables
 if 'messages' not in st.session_state:
     st.session_state.messages = []
-    st.session_state.chat_title = "Mental Health Assistant"
+    st.session_state.chat_title = "ClariMind"
 if 'questionnaire_open' not in st.session_state:
     st.session_state.questionnaire_open = False
 if 'questionnaire_submitted' not in st.session_state:
@@ -59,37 +59,61 @@ if st.session_state.questionnaire_open and not st.session_state.questionnaire_su
     hypervigilance = st.radio("Are you easily startled or always on guard?", ["Yes", "No"])
     impulsivity = st.radio("Do you act on impulses without considering the consequences?", ["Yes", "No"])
 
-    # Submit button for questionnaire
-    if st.button("Submit Questionnaire"):
-        # Store questionnaire responses in a DataFrame
-        questionnaire_data = {
-            "Name": name,
-            "Age": age,
-            "Location": location,
-            "Attention Span": attention_span,
-            "Restlessness": restlessness,
-            "Intrusive Memories": intrusive_memories,
-            "Flashbacks": flashbacks,
-            "Paranoia": paranoia,
-            "Auditory Hallucinations": auditory_hallucinations,
-            "Difficulty Completing Tasks": difficulty_completing_tasks,
-            "Emotional Numbness": emotional_numbness,
-            "Delusions": delusions,
-            "Sleep Disturbances": sleep_disturbances,
-            "Hypervigilance": hypervigilance,
-            "Impulsivity": impulsivity
-        }
-        
-        df = pd.DataFrame([questionnaire_data])  # Create DataFrame from dictionary
+    # After submitting the questionnaire
+if st.button("Submit Questionnaire"):
+    # Generate the patient persona based on questionnaire responses
+    patient_persona = (
+        f"Patient Profile:\n"
+        f"- Name: {name}\n"
+        f"- Age: {age}\n"
+        f"- Location: {location}\n"
+        f"- Gender: {gender}\n"
+        f"- Symptoms:\n"
+        f"  * Attention Span Issues: {'Yes' if attention_span == 'Yes' else 'No'}\n"
+        f"  * Restlessness: {'Yes' if restlessness == 'Yes' else 'No'}\n"
+        f"  * Intrusive Memories: {'Yes' if intrusive_memories == 'Yes' else 'No'}\n"
+        f"  * Flashbacks: {'Yes' if flashbacks == 'Yes' else 'No'}\n"
+        f"  * Paranoia: {'Yes' if paranoia == 'Yes' else 'No'}\n"
+        f"  * Auditory Hallucinations: {'Yes' if auditory_hallucinations == 'Yes' else 'No'}\n"
+        f"  * Difficulty Completing Tasks: {'Yes' if difficulty_completing_tasks == 'Yes' else 'No'}\n"
+        f"  * Emotional Numbness: {'Yes' if emotional_numbness == 'Yes' else 'No'}\n"
+        f"  * Delusions: {'Yes' if delusions == 'Yes' else 'No'}\n"
+        f"  * Sleep Disturbances: {'Yes' if sleep_disturbances == 'Yes' else 'No'}\n"
+        f"  * Hypervigilance: {'Yes' if hypervigilance == 'Yes' else 'No'}\n"
+        f"  * Impulsivity: {'Yes' if impulsivity == 'Yes' else 'No'}\n"
+    )
 
-        # Append to CSV file
-        df.to_csv("mental_health_responses.csv", mode='a', header=not pd.io.common.file_exists("mental_health_responses.csv"), index=False)
-        
-        st.session_state.questionnaire_open = False
-        st.session_state.questionnaire_submitted = True
-        st.success("Thank you for completing the questionnaire!")
+    # Save the persona in session state for persistent use
+    st.session_state.patient_persona = patient_persona
 
-# Chat function (this will work regardless of the questionnaire status)
+    # Store questionnaire responses in a DataFrame for record-keeping
+    questionnaire_data = {
+        "Name": name,
+        "Age": age,
+        "Location": location,
+        "Gender": gender,
+        "Attention Span": attention_span,
+        "Restlessness": restlessness,
+        "Intrusive Memories": intrusive_memories,
+        "Flashbacks": flashbacks,
+        "Paranoia": paranoia,
+        "Auditory Hallucinations": auditory_hallucinations,
+        "Difficulty Completing Tasks": difficulty_completing_tasks,
+        "Emotional Numbness": emotional_numbness,
+        "Delusions": delusions,
+        "Sleep Disturbances": sleep_disturbances,
+        "Hypervigilance": hypervigilance,
+        "Impulsivity": impulsivity
+    }
+
+    df = pd.DataFrame([questionnaire_data])  # Create DataFrame from dictionary
+    df.to_csv("mental_health_responses.csv", mode='a', header=not pd.io.common.file_exists("mental_health_responses.csv"), index=False)
+
+    st.session_state.questionnaire_open = False
+    st.session_state.questionnaire_submitted = True
+    st.success("Thank you for completing the questionnaire! Your patient profile has been created.")
+
+# Chat function with persona integration
 st.title(st.session_state.chat_title)
 
 # Display all previous chat messages
@@ -98,22 +122,25 @@ for message in st.session_state.messages:
         st.markdown(message["content"])
 
 # User input for the chat
-user_input = st.chat_input("Ask about mental health support...")
+user_input = st.chat_input("How can I assist you today?")
 if user_input:
     # Store user message in the chat history
     st.session_state.messages.append({"role": "user", "content": user_input})
 
-    # Create a user profile string
-    user_profile_string = f"User profile: Name: {name}, Age: {age}, Location: {location}, Gender: {gender}"
+    # Prepare the patient persona if available
+    if 'patient_persona' in st.session_state:
+        persona = st.session_state.patient_persona
+    else:
+        persona = "Patient has not filled the questionnaire."
 
-    # Prepare messages for the API call, including the profile and the conversation history
-    messages = [system_message, {"role": "user", "content": user_profile_string}] + st.session_state.messages
+    # Create a full message string
+    messages = [system_message, {"role": "user", "content": persona}] + st.session_state.messages
 
     try:
         # Generate a response from the Groq API
         completion = client.chat.completions.create(
             model="llama3-8b-8192",
-            messages=messages,  # Send the entire conversation with profile info
+            messages=messages,  # Send persona and chat history
             temperature=1,
             max_tokens=1024,
             top_p=1,
