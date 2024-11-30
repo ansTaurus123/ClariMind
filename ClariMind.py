@@ -58,6 +58,29 @@ with st.sidebar:
     if st.button("Reset Chat"):
         reset_chat()
 
+# Button to open the questionnaire
+if st.button("Please fill the questionnaire"):
+    st.session_state.questionnaire_open = True
+
+# Display the questionnaire if the button was clicked
+if st.session_state.questionnaire_open and not st.session_state.questionnaire_submitted:
+    st.header("Mental Health Screening Questionnaire")
+    st.write("Please answer the following questions to help us understand your condition.")
+
+    # Questionnaire for mental health screening
+    attention_span = st.radio("Do you find it difficult to concentrate for extended periods?", ["Yes", "No"])
+    restlessness = st.radio("Do you often feel restless or unable to sit still?", ["Yes", "No"])
+    intrusive_memories = st.radio("Do you experience intrusive or distressing memories of traumatic events?", ["Yes", "No"])
+    flashbacks = st.radio("Do you frequently relive past traumatic events (e.g., through flashbacks)?", ["Yes", "No"])
+    paranoia = st.radio("Do you feel like others are watching or trying to harm you?", ["Yes", "No"])
+    auditory_hallucinations = st.radio("Do you hear voices that others cannot hear?", ["Yes", "No"])
+    difficulty_completing_tasks = st.radio("Do you often start tasks but fail to complete them?", ["Yes", "No"])
+    emotional_numbness = st.radio("Do you feel emotionally numb or detached from people?", ["Yes", "No"])
+    delusions = st.radio("Do you hold beliefs that others find unusual or illogical?", ["Yes", "No"])
+    sleep_disturbances = st.radio("Do you experience difficulty falling or staying asleep?", ["Yes", "No"])
+    hypervigilance = st.radio("Are you easily startled or always on guard?", ["Yes", "No"])
+    impulsivity = st.radio("Do you act on impulses without considering the consequences?", ["Yes", "No"])
+
 # After submitting the questionnaire
 if st.button("Submit Questionnaire"):
     # Generate the patient persona based on questionnaire responses
