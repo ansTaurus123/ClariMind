@@ -11,7 +11,7 @@ def add_fullpage_background_image():
         f"""
         <style>
         .stApp {{
-            background-image: url("https://raw.githubusercontent.com/ansabb420/ClariMind/main/360_F_562116144_lxZOlafYtRtv8BzmKTKGcNby0D37ZVTZ.jpg");
+            background-image: url("https://raw.githubusercontent.com/ansabb420/ClariMind/main/img.jpg");
             background-size: cover;  /* Ensures the image covers the full screen */
             background-repeat: no-repeat;  /* Prevents tiling */
             background-position: center;  /* Centers the image */
