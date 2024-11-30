@@ -27,128 +27,137 @@ def add_fullpage_background_image():
 # Add background image
 add_fullpage_background_image()
 
-# System message for the assistant
+# Define the system message for the model
 system_message = {
     "role": "system",
-    "content": (
-        "You are a mental health assistant trained to identify symptoms of ADHD, PTSD, and schizophrenia "
-        "based on user responses and provide empathetic support, recommendations, and mindfulness activities. "
-        "Your responses should prioritize practical solutions tailored to the user's symptoms."
-    )
+    "content": "You are a mental health assistant trained to identify symptoms of ADHD, PTSD, and schizophrenia based on user responses and provide appropriate recommendations, resources and perscriptions as per patients condition by thoroughly exploring his state of mind. Start conversations with empathy and stay supportive, like an expert psycho therapist"
 }
 
-# Reset chat functionality
+# Function to reset the chat
 def reset_chat():
     st.session_state.messages = []
-    st.session_state.questionnaire_open = True
-    st.session_state.questionnaire_submitted = False
-    st.session_state.chat_title = "ClariMind"
+    st.session_state.chat_title = "New Chat"
 
 # Initialize session state variables
 if 'messages' not in st.session_state:
     st.session_state.messages = []
-    st.session_state.questionnaire_open = True
+    st.session_state.chat_title = "Mental Health Assistant"
+if 'questionnaire_open' not in st.session_state:
+    st.session_state.questionnaire_open = False
+if 'questionnaire_submitted' not in st.session_state:
     st.session_state.questionnaire_submitted = False
-    st.session_state.chat_title = "ClariMind"
 
-# Function to save patient persona
-def save_patient_persona(name, age, location, gender, responses):
-    persona = f"""
-    Patient Profile:
-    - Name: {name}
-    - Age: {age}
-    - Gender: {gender}
-    - Location: {location}
-    - Symptoms:
-      * Attention span issues: {responses['attention_span']}
-      * Restlessness: {responses['restlessness']}
-      * Anxiety: {responses['anxiety']}
-      * Low energy: {responses['low_energy']}
-      * Intrusive memories: {responses['intrusive_memories']}
-      * Hallucinations: {responses['hallucinations']}
-      * Impulsivity: {responses['impulsivity']}
-      * Mood swings: {responses['mood_swings']}
-      * Sleep disturbances: {responses['sleep_disturbances']}
-      * Paranoia: {responses['paranoia']}
-      * Emotional detachment: {responses['emotional_detachment']}
-    """
-    st.session_state.patient_persona = persona
-
-# Questionnaire logic
-if st.session_state.questionnaire_open and not st.session_state.questionnaire_submitted:
-    st.title("Mental Health Screening")
-    st.write("Please fill out the questionnaire to help us understand your condition.")
-
-    # Basic user details
-    name = st.text_input("Name", value="Patient")
+# Sidebar for user inputs
+with st.sidebar:
+    st.header("User Inputs")
+    name = st.text_input("Name")
     age = st.number_input("Age", min_value=1, max_value=100, value=25)
     location = st.text_input("Location")
     gender = st.selectbox("Gender", options=["Male", "Female", "Other"])
 
-    # Diverse mental health questions
-    st.header("Your Mental Health Symptoms")
-    responses = {
-        "attention_span": st.radio("Do you struggle with maintaining attention?", ["Yes", "No"]),
-        "restlessness": st.radio("Do you feel restless or unable to relax?", ["Yes", "No"]),
-        "anxiety": st.radio("Do you often feel anxious or worried?", ["Yes", "No"]),
-        "low_energy": st.radio("Do you experience low energy or fatigue?", ["Yes", "No"]),
-        "intrusive_memories": st.radio("Do you have distressing memories or flashbacks?", ["Yes", "No"]),
-        "hallucinations": st.radio("Do you hear or see things that others cannot?", ["Yes", "No"]),
-        "impulsivity": st.radio("Do you act on impulses without considering consequences?", ["Yes", "No"]),
-        "mood_swings": st.radio("Do you experience frequent mood swings?", ["Yes", "No"]),
-        "sleep_disturbances": st.radio("Do you have trouble sleeping?", ["Yes", "No"]),
-        "paranoia": st.radio("Do you feel suspicious or paranoid?", ["Yes", "No"]),
-        "emotional_detachment": st.radio("Do you feel emotionally detached or numb?", ["Yes", "No"])
+    if st.button("Reset Chat"):
+        reset_chat()
+
+# After submitting the questionnaire
+if st.button("Submit Questionnaire"):
+    # Generate the patient persona based on questionnaire responses
+    patient_persona = (
+        f"Patient Profile:\n"
+        f"- Name: {name}\n"
+        f"- Age: {age}\n"
+        f"- Location: {location}\n"
+        f"- Gender: {gender}\n"
+        f"- Symptoms:\n"
+        f"  * Attention Span Issues: {'Yes' if attention_span == 'Yes' else 'No'}\n"
+        f"  * Restlessness: {'Yes' if restlessness == 'Yes' else 'No'}\n"
+        f"  * Intrusive Memories: {'Yes' if intrusive_memories == 'Yes' else 'No'}\n"
+        f"  * Flashbacks: {'Yes' if flashbacks == 'Yes' else 'No'}\n"
+        f"  * Paranoia: {'Yes' if paranoia == 'Yes' else 'No'}\n"
+        f"  * Auditory Hallucinations: {'Yes' if auditory_hallucinations == 'Yes' else 'No'}\n"
+        f"  * Difficulty Completing Tasks: {'Yes' if difficulty_completing_tasks == 'Yes' else 'No'}\n"
+        f"  * Emotional Numbness: {'Yes' if emotional_numbness == 'Yes' else 'No'}\n"
+        f"  * Delusions: {'Yes' if delusions == 'Yes' else 'No'}\n"
+        f"  * Sleep Disturbances: {'Yes' if sleep_disturbances == 'Yes' else 'No'}\n"
+        f"  * Hypervigilance: {'Yes' if hypervigilance == 'Yes' else 'No'}\n"
+        f"  * Impulsivity: {'Yes' if impulsivity == 'Yes' else 'No'}\n"
+    )
+
+    # Save the persona in session state for persistent use
+    st.session_state.patient_persona = patient_persona
+
+    # Store questionnaire responses in a DataFrame for record-keeping
+    questionnaire_data = {
+        "Name": name,
+        "Age": age,
+        "Location": location,
+        "Gender": gender,
+        "Attention Span": attention_span,
+        "Restlessness": restlessness,
+        "Intrusive Memories": intrusive_memories,
+        "Flashbacks": flashbacks,
+        "Paranoia": paranoia,
+        "Auditory Hallucinations": auditory_hallucinations,
+        "Difficulty Completing Tasks": difficulty_completing_tasks,
+        "Emotional Numbness": emotional_numbness,
+        "Delusions": delusions,
+        "Sleep Disturbances": sleep_disturbances,
+        "Hypervigilance": hypervigilance,
+        "Impulsivity": impulsivity
     }
 
-    # Submit button
-    if st.button("Submit Questionnaire"):
-        save_patient_persona(name, age, location, gender, responses)
+    df = pd.DataFrame([questionnaire_data])  # Create DataFrame from dictionary
+    df.to_csv("mental_health_responses.csv", mode='a', header=not pd.io.common.file_exists("mental_health_responses.csv"), index=False)
 
-        # Save data to a CSV file for records
-        df = pd.DataFrame([{**responses, "Name": name, "Age": age, "Location": location, "Gender": gender}])
-        df.to_csv("mental_health_responses.csv", mode='a', header=not pd.io.common.file_exists("mental_health_responses.csv"), index=False)
+    st.session_state.questionnaire_open = False
+    st.session_state.questionnaire_submitted = True
+    st.success("Thank you for completing the questionnaire! Your patient profile has been created.")
 
-        st.session_state.questionnaire_open = False
-        st.session_state.questionnaire_submitted = True
-        st.success("Questionnaire submitted! Redirecting to the chat interface.")
+# Chat function with persona integration
+st.title(st.session_state.chat_title)
 
-# Chat interface logic
-if not st.session_state.questionnaire_open and st.session_state.questionnaire_submitted:
-    st.title(st.session_state.chat_title)
+# Display all previous chat messages
+for message in st.session_state.messages:
+    with st.chat_message(message["role"]):
+        st.markdown(message["content"])
 
-    # Display chat messages
-    for message in st.session_state.messages:
-        with st.chat_message(message["role"]):
-            st.markdown(message["content"])
+# User input for the chat
+user_input = st.chat_input("How can I assist you today?")
+if user_input:
+    # Store user message in the chat history
+    st.session_state.messages.append({"role": "user", "content": user_input})
 
-    # User chat input
-    user_input = st.chat_input("How can I assist you today?")
-    if user_input:
-        st.session_state.messages.append({"role": "user", "content": user_input})
+    # Prepare the patient persona if available
+    if 'patient_persona' in st.session_state:
+        persona = st.session_state.patient_persona
+    else:
+        persona = "Patient has not filled the questionnaire."
 
-        # Use patient persona if available
-        persona = st.session_state.get("patient_persona", "Patient profile not available.")
-        messages = [system_message, {"role": "user", "content": persona}] + st.session_state.messages
+    # Create a full message string
+    messages = [system_message, {"role": "user", "content": persona}] + st.session_state.messages
 
-        try:
-            # Generate assistant response
-            response = client.chat.completions.create(
-                model="llama3-8b-8192",
-                messages=messages,
-                temperature=0.8,
-                max_tokens=500,
-            )
-            assistant_reply = response.choices[0].message.content
-        except Exception as e:
-            assistant_reply = f"Error generating response: {str(e)}"
+    try:
+        # Generate a response from the Groq API
+        completion = client.chat.completions.create(
+            model="llama3-8b-8192",
+            messages=messages,  # Send persona and chat history
+            temperature=1,
+            max_tokens=1024,
+            top_p=1,
+            stream=False,
+        )
 
-        # Save and display assistant reply
-        st.session_state.messages.append({"role": "assistant", "content": assistant_reply})
-        with st.chat_message("assistant"):
-            st.markdown(assistant_reply)
+        # Ensure response is valid
+        if completion.choices and len(completion.choices) > 0:
+            response_content = completion.choices[0].message.content
+        else:
+            response_content = "Sorry, I couldn't generate a response."
 
-# Reset option
-with st.sidebar:
-    if st.button("Reset App"):
-        reset_chat()
+    except Exception as e:
+        response_content = f"Error: {str(e)}"
+
+    # Store assistant response in the chat history
+    st.session_state.messages.append({"role": "assistant", "content": response_content})
+
+    # Display assistant response
+    with st.chat_message("assistant"):
+        st.markdown(response_content)
