@@ -5,6 +5,27 @@ from groq import Groq
 # Initialize the Groq client with your API key
 client = Groq(api_key="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")
 
+# Function to encode the image
+def add_background_image(image_path):
+    with open(image_path, "rb") as img_file:
+        encoded_image = base64.b64encode(img_file.read()).decode()
+    css_style = f"""
+    <style>
+    .stApp {{
+        background-image: url("data:image/jpeg;base64,{encoded_image}");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+    }}
+    </style>
+    """
+    st.markdown(css_style, unsafe_allow_html=True)
+
+# Add the background image
+add_background_image("background.jpg")  # Replace with your image filename
+
+
 # System message for the assistant
 system_message = {
     "role": "system",
