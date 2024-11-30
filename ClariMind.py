@@ -11,7 +11,7 @@ def add_background_image():
         f"""
         <style>
         .stApp {{
-            background-image: url("https://raw.githubusercontent.com/ansabb420/ClariMind/main/360_F_562116144_lxZOlafYtRtv8BzmKTKGcNby0D37ZVTZ.jpg");
+            background-image: url("https://raw.githubusercontent.com/ansabb420/ClariMind/main/Brain-inspiredAI-1024x683.jpeg");
             background-size: cover;
             background-repeat: no-repeat;
             background-attachment: fixed;
