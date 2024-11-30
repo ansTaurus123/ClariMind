@@ -5,16 +5,19 @@ from groq import Groq
 # Initialize the Groq client with your API key
 client = Groq(api_key="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")
 
-# Custom CSS for background image
-def add_background_image():
+# Custom CSS for full-page background image
+def add_fullpage_background_image():
     st.markdown(
         f"""
         <style>
         .stApp {{
-            background-image: url("https://raw.githubusercontent.com/ansabb420/ClariMind/main/Brain-inspiredAI-1024x683.jpeg");
-            background-size: cover;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
+            background-image: url("https://raw.githubusercontent.com/ansabb420/ClariMind/main/360_F_562116144_lxZOlafYtRtv8BzmKTKGcNby0D37ZVTZ.jpg");
+            background-size: cover;  /* Ensures the image covers the full screen */
+            background-repeat: no-repeat;  /* Prevents tiling */
+            background-position: center;  /* Centers the image */
+            background-attachment: fixed;  /* Keeps the image fixed while scrolling */
+            height: 100vh;  /* Sets the height to full viewport height */
+            overflow: hidden;  /* Prevents scrollbars from showing */
         }}
         </style>
         """,
@@ -22,7 +25,7 @@ def add_background_image():
     )
 
 # Add background image
-add_background_image()
+add_fullpage_background_image()
 
 # System message for the assistant
 system_message = {
