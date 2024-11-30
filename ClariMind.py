@@ -3,12 +3,12 @@ import pandas as pd
 from groq import Groq
 
 # Initialize the Groq client with your API key
-client = Groq(api_key="your_groq_api_key")
+client = Groq(api_key="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")
 
 # Define the system message for the model
 system_message = {
     "role": "system",
-    "content": "You are a mental health assistant trained to identify symptoms of ADHD, PTSD, and schizophrenia based on user responses and provide appropriate recommendations or resources. Start conversations with empathy and stay supportive."
+    "content": "You are a mental health assistant trained to identify symptoms of ADHD, PTSD, and schizophrenia based on user responses and provide appropriate recommendations or resources. Start conversations with empathy and stay supportive, deals user as a patient being a worthy psychiatrist."
 }
 
 # Function to reset the chat
