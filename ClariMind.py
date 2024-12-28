@@ -5,27 +5,6 @@ from groq import Groq
 # Initialize the Groq client with your API key
 client = Groq(api_key="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")
 
-# Custom CSS for full-page background image
-def add_fullpage_background_image():
-    st.markdown(
-        f"""
-        <style>
-        .stApp {{
-            background-image: url("https://raw.githubusercontent.com/ansabb420/ClariMind/main/img.jpg");
-            background-size: cover;  /* Ensures the image covers the full screen */
-            background-repeat: no-repeat;  /* Prevents tiling */
-            background-position: center;  /* Centers the image */
-            background-attachment: fixed;  /* Keeps the image fixed while scrolling */
-            height: 100vh;  /* Sets the height to full viewport height */
-            overflow: hidden;  /* Prevents scrollbars from showing */
-        }}
-        </style>
-        """,
-        unsafe_allow_html=True
-    )
-
-# Add background image
-add_fullpage_background_image()
 
 # Define the system message for the model
 system_message = {
