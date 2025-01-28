@@ -3,7 +3,7 @@ import pandas as pd
 from groq import Groq
 
 # Initialize the Groq client with your API key
-client = Groq(api_key="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")
+client = Groq(api_key="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")
 
 # Custom CSS for full-page background image
 def add_fullpage_background_image():
